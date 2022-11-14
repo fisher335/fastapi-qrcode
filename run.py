@@ -10,6 +10,7 @@ from router.FileController import file_app
 from router.MainController import main_app
 from router.ScanController import scan_app
 from router.UserController import user_app
+from router.DevController import dev_app
 from service.UserService import checkToken
 
 app = FastAPI(title='快速调用接口', description='验证项目', version='1.0.0', docs_url='/docs', redoc_url='/redocs', )
@@ -49,6 +50,7 @@ app.include_router(main_app, prefix="", tags=["其他接口"])
 app.include_router(file_app, prefix="/file", tags=["MinIO文件"])
 app.include_router(user_app, prefix="/user", tags=["用户相关"])
 app.include_router(scan_app, prefix="/scan", tags=["扫描相关"])
+app.include_router(dev_app, prefix="/dev", tags=["扫描相关"])
 app.mount("/static", StaticFiles(directory="static"), name="static")
 print("Static Files mounted successfully")
 

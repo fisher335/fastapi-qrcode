@@ -2,14 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="3334d1e3-7aef-44be-ba71-373a0ba8f70f" name="变更" comment="增加webshell的内容">
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/fastapi.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change afterPath="$PROJECT_DIR$/router/DevController.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/run.py" beforeDir="false" afterPath="$PROJECT_DIR$/run.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -45,7 +40,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "last_opened_file_path": "E:/Dev/PycharmProjects/fastapi-quick/utils",
+    "last_opened_file_path": "E:/Dev/PycharmProjects/fastapi-quick/router",
     "nodejs_package_manager_path": "npm",
     "settings.editor.selected.configurable": "http.proxy",
     "typescript.add.unambiguous.imports.on.the.fly": "true"
@@ -58,11 +53,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="E:\Dev\PycharmProjects\fastapi-quick\router" />
       <recent name="E:\Dev\PycharmProjects\fastapi-quick\utils" />
       <recent name="E:\Dev\PycharmProjects\fastapi-quick\common" />
       <recent name="E:\Dev\PycharmProjects\fastapi-quick" />
       <recent name="E:\Dev\PycharmProjects\fastapi-quick\venv" />
-      <recent name="E:\Dev\PycharmProjects\fastapi-quick\model" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="E:\Dev\PycharmProjects\fastapi-quick\common" />
@@ -218,7 +213,7 @@
       <workItem from="1667271318605" duration="9402000" />
       <workItem from="1667349297059" duration="5141000" />
       <workItem from="1667461869935" duration="30964000" />
-      <workItem from="1668126030617" duration="18859000" />
+      <workItem from="1668126030617" duration="20055000" />
     </task>
     <task id="LOCAL-00001" summary=":init">
       <created>1653471883654</created>
@@ -451,7 +446,21 @@
       <option name="project" value="LOCAL" />
       <updated>1668149899381</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="增加webshell的内容">
+      <created>1668392487097</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1668392487097</updated>
+    </task>
+    <task id="LOCAL-00035" summary="增加webshell的内容">
+      <created>1668392500841</created>
+      <option name="number" value="00035" />
+      <option name="presentableId" value="LOCAL-00035" />
+      <option name="project" value="LOCAL" />
+      <updated>1668392500841</updated>
+    </task>
+    <option name="localTasksCounter" value="36" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
