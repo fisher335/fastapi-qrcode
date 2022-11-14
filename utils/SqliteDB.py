@@ -1,7 +1,20 @@
 # -*- coding: utf-8 -*-
 import sqlite3
 
-import random
+from dbutils.persistent_db import PersistentDB
+
+
+class Pool(object):  # 数据库连接池
+    __pool = None  # 记录第一个被创建的对象引用
+    config = {
+        'database': '../sms.db'  # 数据库文件路径
+    }
+
+    def __new__(cls, *args, **kwargs):
+        """创建连接池对象  单例设计模式(每个线程中只创建一个连接池对象)  PersistentDB为每个线程提供专用的连接池"""
+        if cls.__pool is None:  # 如果__pool为空，说明创建的是第一个连接池对象
+            cls.__pool = PersistentDB(sqlite3, maxusage=None, closeable=False, **cls.config)
+        return cls.__pool
 
 
 def dict_factory(cursor, row):
@@ -14,7 +27,7 @@ def dict_factory(cursor, row):
 
 class SqliteDB:
 
-    def __init__(self, database="sms.db", dict_out=True):
+    def __init__(self, database="./sms.db", dict_out=True):
         try:
             self.conn = sqlite3.connect(database)
             # 字典形式放回
@@ -24,6 +37,18 @@ class SqliteDB:
             self.cursor = self.conn.cursor()
         except Exception as e:
             print(e)
+
+    def __enter__(self):
+        """自动从连接池中取出一个连接"""
+        db_pool = Pool()
+        self.conn = db_pool.connection()
+        self.cur = self.conn.cursor()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """自动释放当前连接资源 归还给连接池"""
+        self.cur.close()
+        self.conn.close()
 
     # 返回执行execute()方法后影响的行数
     def execute(self, sql):

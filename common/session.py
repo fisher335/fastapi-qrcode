@@ -1,91 +1,63 @@
-#!/usr/bin/env python
-# -*- coding: utf-8 -*-
-# @Time    : 2020/10/16 11:42
-# @Author  : CoderCharm
-# @File    : session.py
-# @Software: PyCharm
-# @Github  : github/CoderCharm
-# @Email   : wg_python@163.com
-# @Desc    :
-"""
-暂时放弃使用这个orm了，因为简单，全部用sql自己来写了
-"""
-import math
-import datetime
-
-from peewee import _ConnectionState, Model, ModelSelect, SQL, DateTimeField
-from contextvars import ContextVar
-from playhouse.pool import PooledSqliteDatabase
+from dbutils.persistent_db import PersistentDB
+import sqlite3
 
 
-
-db_state_default = {"closed": None, "conn": None, "ctx": None, "transactions": None}
-db_state = ContextVar("db_state", default=db_state_default.copy())
-
-
-# reference to https://fastapi.tiangolo.com/advanced/sql-databases-peewee/#context-variable-sub-dependency
-class PeeweeConnectionState(_ConnectionState):
-    def __init__(self, **kwargs):
-        super().__setattr__("_state", db_state)
-        super().__init__(**kwargs)
-
-    def __setattr__(self, name, value):
-        self._state.get()[name] = value
-
-    def __getattr__(self, name):
-        return self._state.get()[name]
-
-
-db = PooledSqliteDatabase(
-    "sms.db.db",
-    max_connections=8,
-    stale_timeout=300,
-
-)
-
-db._state = PeeweeConnectionState()
-
-
-class BaseModel(Model):
-    deleted_at = DateTimeField()
-    created_at = DateTimeField(default=datetime.datetime.now())
-    updated_at = DateTimeField(default=datetime.datetime.now())
-
-    @classmethod
-    def undelete(cls):
-        # for logic delete
-        return cls.select().where(SQL("deleted is NULL"))
-
-    class Meta:
-        database = db
-
-
-def paginator(query: ModelSelect, page: int, page_size: int, order_by: str = "id ASC"):
-    count = query.count()
-    if page < 1:
-        page = 1
-
-    if page_size <= 0:
-        page_size = 10
-
-    if page_size >= 100:
-        page_size = 100
-
-    if page == 1:
-        offset = 0
-    else:
-        offset = (page - 1) * page_size
-
-    query = query.offset(offset).limit(page_size).order_by(SQL(order_by))
-
-    total_pages = math.ceil(count / page_size)
-
-    paginate = {
-        "total_pages": total_pages,
-        "count": count,
-        "current_page": page,
-        "pre_page": page - 1 if page > 1 else page,
-        "next_page": page if page == total_pages else page + 1
+class Pool(object):  # 数据库连接池
+    __pool = None  # 记录第一个被创建的对象引用
+    config = {
+        'database': './sms.db'  # 数据库文件路径
     }
 
-    return list(query.dicts()), paginate
+    def __new__(cls, *args, **kwargs):
+        """创建连接池对象  单例设计模式(每个线程中只创建一个连接池对象)  PersistentDB为每个线程提供专用的连接池"""
+        if cls.__pool is None:  # 如果__pool为空，说明创建的是第一个连接池对象
+            cls.__pool = PersistentDB(sqlite3, maxusage=None, closeable=False, **cls.config)
+        return cls.__pool
+
+
+class Connect:
+    def __enter__(self):
+        """自动从连接池中取出一个连接"""
+        db_pool = Pool()
+        self.conn = db_pool.connection()
+        self.cur = self.conn.cursor()
+        return self
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        """自动释放当前连接资源 归还给连接池"""
+        self.cur.close()
+        self.conn.close()
+
+
+# # 查询一条数据
+# def find_one(table, data):
+#     sql = 'select * from ' + table + ' where ip=?'
+#     with Connect() as db:  # 从连接池中取出一个连接
+#         db.cur.execute(sql, (data,))  # sqlite用元组接受字符串
+#         result = db.cur.fetchone()
+#     return result[0]
+#
+#
+# # 插入一条数据
+# def insert_one(table, data):
+#     sql = 'insert or ignore into ' + table + '(ip) values(?)'  # 不重复插入
+#     with Connect() as db:
+#         db.cur.execute(sql, (data,))
+#         db.conn.commit()
+#
+#
+# # 删除一条数据
+# def delete_one(table, data):
+#     sql = 'delete from ' + table + ' where ip=?'
+#     with Connect() as db:
+#         db.cur.execute(sql, (data,))
+#         db.conn.commit()
+
+
+"""
+SQLite 由于线程安全机制 不支持 PooledDB 线程共享连接模式   故使用PersistentDB 线程专用连接模式 为每个线程单独开连接池
+SQLite 只支持读并发 即:写独占，读共享，所以要在修改操作时使用互斥锁。 为了体现精简性，这里就不演示了
+PooledDB()中的参数解释自行查找
+"""
+
+
