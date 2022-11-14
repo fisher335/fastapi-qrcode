@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import sqlite3
+from common.Common import CommonUtils
 
 from dbutils.persistent_db import PersistentDB
 
@@ -200,7 +201,7 @@ class SqliteDB:
 
 
 if __name__ == '__main__':
-    db = SqliteDB()
+    db = SqliteDB(database='../sms.db')
     # sql = "CREATE TABLE asin (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, asin VARCHAR, status VARCHAR, title VARCHAR, cover VARCHAR, stars double, lreviewdate VARCHAR, description VARCHAR, url VARCHAR, atime timestamp NULL DEFAULT NULL, mtime timestamp NULL DEFAULT NULL, price double, flag INTEGER DEFAULT 0, reviewcount INTEGER DEFAULT 0)"
     # sql = "CREATE TABLE keyword (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, keyword VARCHAR, flag INTEGER DEFAULT 0, isrelate INTEGER DEFAULT 0, locked INTEGER DEFAULT 0, );"
     # sql = "CREATE TABLE pre_asin (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, asin VARCHAR, status VARCHAR, title VARCHAR, cover VARCHAR, stars double, lreviewdate VARCHAR, description VARCHAR, url VARCHAR, atime timestamp NULL DEFAULT NULL, mtime timestamp NULL DEFAULT NULL, price double, flag INTEGER DEFAULT 0, reviewcount INTEGER DEFAULT 0)"
@@ -211,9 +212,9 @@ if __name__ == '__main__':
     # for i in range(5):
     #     asin += random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
     #
-    # # insert测试
-    # cs = db.insert(table="asin", asin=asin, title="标题"+str(random.randint(100,999)), stars=4.3)
-    # print(cs)
+    # insert测试
+    cs = db.insert(table="sm_dev", host='172.168.120.228', status="正常", id=CommonUtils.getID(),type="路由器")
+    print(cs)
 
     # delete 测试
     # cs = db.delete(table="asin", where="id=6")
@@ -224,5 +225,5 @@ if __name__ == '__main__':
     # print(cs)
 
     # select 测试
-    cs = db.getOne(table="users", where='''id = "admin" ''')
-    print(cs)
+    # cs = db.getOne(table="users", where='''id = "admin" ''')
+    # print(cs)
