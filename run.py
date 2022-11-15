@@ -9,7 +9,6 @@ from router.FileController import file_app
 from router.MainController import main_app
 from router.ScanController import scan_app
 from router.UserController import user_app
-from service.UserService import checkToken
 
 app = FastAPI(title='快速调用接口', description='验证项目', version='1.0.0', docs_url='/docs', redoc_url='/redocs', )
 
