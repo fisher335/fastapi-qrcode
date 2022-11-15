@@ -152,9 +152,9 @@ class SqliteDB:
     # 查所有数据
     def getAll(self, **kwargs):
         table = kwargs['table']
-        field = 'field' in kwargs and kwargs['field'] or '*'
-        where = 'where' in kwargs and 'where ' + kwargs['where'] or ''
-        order = 'order' in kwargs and 'order by ' + kwargs['order'] or ''
+        field = kwargs['field'] if 'field' in kwargs else '*'
+        where = 'where ' + kwargs['where'] if 'where' in kwargs else ''
+        order = 'order by ' + kwargs['order'] if 'order' in kwargs else ''
         sql = 'select %s from %s %s %s ' % (field, table, where, order)
         print(sql)
         try:
@@ -167,6 +167,8 @@ class SqliteDB:
             # 发生错误时回滚
             self.conn.rollback()
             return []
+
+
 
     def createtb(self, sql=None, table=None, drop=None):
 
@@ -213,7 +215,8 @@ if __name__ == '__main__':
     #     asin += random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
     #
     # insert测试
-    cs = db.insert(table="sm_dev", host='172.168.120.236', status="下线", id=CommonUtils.getID(),type="路由器",description="第三方")
+    cs = db.insert(table="sm_dev", host='172.168.120.236', status="下线", id=CommonUtils.getID(), type="路由器",
+                   description="第三方")
     print(cs)
 
     # delete 测试

@@ -107,7 +107,11 @@ def get_users(params: dict = None):
     with SqliteDB() as db:
         if params is not None:
             name = params.get("name")
-            result = db.getAll(table='users', where=f"id = '{name}'")
+            user_type = params.get("type")
+            where = f" id  like  '%{name}%'   "
+            if user_type:
+                where = where + f" and type = '{user_type}'"
+            result = db.getAll(table='users', where= where)
         else:
             result = db.getAll(table='users')
         return result

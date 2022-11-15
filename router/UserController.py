@@ -39,12 +39,7 @@ async def login(username: str = Form(...),
 def get_list(paras: Dict[str, Any], page: int = Body(..., embed=True), pageSize: int = Body(..., embed=True)):
     print(page, pageSize, paras)
     faker = Faker()
-    user_list = get_users()
-    # for i in range(50):
-    #     u = {'id': 112 + i, 'name': "测试姓名" + str(i), 'address': faker.address(),
-    #          'date': faker.time(pattern="%H:%M:%S", end_datetime=None)}
-    #     user_list.append(u)
-
+    user_list = get_users(paras)
     start = (page - 1) * pageSize
     end = page * pageSize
     data = {"list": user_list[start:end], "currentPage": page, "total": len(user_list), "pageSize": pageSize}
