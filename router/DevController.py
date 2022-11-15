@@ -9,8 +9,8 @@ from service.FileService import getMinIOFileList, downloadFile
 dev_app = APIRouter()
 
 
-@dev_app.post("/list", tags=["设备清单"])
-async def read_item(page: int = 1, pageSize: int = 10):
+@dev_app.post("/list")
+async def get_list(page: int = 1, pageSize: int = 10):
     fileList = sorted(get_dev_list(), key=lambda file: file.get("id"))
     print(get_dev_list())
     start = (page - 1) * pageSize
@@ -20,7 +20,7 @@ async def read_item(page: int = 1, pageSize: int = 10):
     return responseData.ok(data)
 
 
-@dev_app.post("/add", tags=["MinIO文件"])
-async def read_item(name: str = Body(..., embed=True)):
+@dev_app.post("/add")
+async def add_item(name: str = Body(..., embed=True)):
     downloadURL = downloadFile(name)
     return responseData.ok(downloadURL)

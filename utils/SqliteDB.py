@@ -213,7 +213,7 @@ if __name__ == '__main__':
     #     asin += random.choice('ABCDEFGHIJKLMNOPQRSTUVWXYZ')
     #
     # insert测试
-    cs = db.insert(table="sm_dev", host='172.168.120.228', status="正常", id=CommonUtils.getID(),type="路由器")
+    cs = db.insert(table="sm_dev", host='172.168.120.236', status="下线", id=CommonUtils.getID(),type="路由器",description="第三方")
     print(cs)
 
     # delete 测试

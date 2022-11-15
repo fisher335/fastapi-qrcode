@@ -13,9 +13,7 @@
 from utils.SqliteDB import SqliteDB
 
 
-
 class User():
-
     """
     用户表
     """
@@ -23,11 +21,8 @@ class User():
     name = ''
     email = ''
     phone = ''
-    avatar = ''
     password = ''
     type = ''
-
-
 
     @classmethod
     def single_by_id(cls, uid: str):

@@ -1,8 +1,10 @@
 # coding:utf-8
+
 from starlette.requests import Request
 
 from common.jwt import check_jwt_token
 from config.Config import WHITE_URL, ALLOW_LIST, USER_LIST
+from model.users import User
 from utils.SqliteDB import SqliteDB
 
 
@@ -17,12 +19,13 @@ def user_check(user: str, pwd: str) -> bool:
 
 #  检查用户名和密码
 def checkPWD(name: str, pwd: str):
-    db = SqliteDB()
-    password = db.getOne(table="users", where=f"id ={name} ")
-    if password.strip() == pwd.strip():
-        return True
-    else:
-        return False
+    with SqliteDB() as db:
+        user = User.single_by_id(name)
+        if len(user) > 0:
+            if user.get('password').strip() == pwd.strip():
+                return user
+        else:
+            return False
 
 
 def checkToken(request: Request):
@@ -43,30 +46,13 @@ def checkToken(request: Request):
     return flag
 
 
-def getMenus():
+def getMenus(usertype: str):
+    print('---------------' + usertype)
     home = [{
         'icon': 'el-icon-setting',
         'index': '/home',
         'title': '首页',
         'subs': None
-    }, {
-        'icon': 'el-icon-menu',
-        'index': '2',
-        'title': '用户管理',
-        'subs': [
-            {
-                'icon': None,
-                'index': '/users',
-                'title': '用户列表',
-                'subs': None
-            },
-            {
-                'icon': None,
-                'index': '/user/info',
-                'title': '用户信息',
-                'subs': None
-            }
-        ]
     }, {
         "icon": 'el-icon-setting',
         "index": '/scaner',
@@ -99,4 +85,29 @@ def getMenus():
             "title": '文件管理'
         }]
 
+    if usertype == '管理员':
+        print('22222222222222222222222222' + usertype)
+        user_manager_menu = {'icon': 'el-icon-menu',
+                             'index': '2',
+                             'title': '用户管理',
+                             'subs': [
+                                 {
+                                     'icon': None,
+                                     'index': '/users',
+                                     'title': '用户列表',
+                                     'subs': None
+                                 }
+                             ]
+                             }
+        home.insert(1, user_manager_menu)
     return home
+
+
+def get_users(params: dict = None):
+    with SqliteDB() as db:
+        if params is not None:
+            name = params.get("name")
+            result = db.getAll(table='users', where=f"id = '{name}'")
+        else:
+            result = db.getAll(table='users')
+        return result

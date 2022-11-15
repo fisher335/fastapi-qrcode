@@ -1,5 +1,6 @@
 # coding:utf-8
 from datetime import timedelta
+from typing import Dict, Any
 
 from faker import Faker
 from fastapi import APIRouter, Body, Depends
@@ -9,7 +10,7 @@ from common.jwt import get_current_user
 from config import Config
 from model.ResData import responseData
 
-from service.UserService import user_check, getMenus
+from service.UserService import *
 from common.jwt import create_access_token
 
 # 用户的分路由
@@ -21,11 +22,12 @@ user_app = APIRouter()
 @user_app.post("/login")
 async def login(username: str = Form(...),
                 password: str = Form(...)):
-    if user_check(username, password):
+    user = checkPWD(username, password)
+    if user:
         access_token_expires = timedelta(minutes=Config.ACCESS_TOKEN_EXPIRE_MINUTES)
         # 登录token 存储了user.id
         token = create_access_token(username, expires_delta=access_token_expires),
-        menus = getMenus()
+        menus = getMenus(user.get('type', '普通用户'))
         data = {'token': token, 'meuns': menus, 'routers': "/home_/users_/user/info_/test"}
         return responseData.ok(data)
     else:
@@ -34,17 +36,18 @@ async def login(username: str = Form(...),
 
 
 @user_app.post("/list", response_model=responseData)
-def read_item(page: str = Body(..., embed=True), pageSize: str = Body(..., embed=True),
-              name: str = Body(..., embed=True), address: str = Body(..., embed=True)):
-    print(page, pageSize, name, address)
+def get_list(paras: Dict[str, Any], page: int = Body(..., embed=True), pageSize: int = Body(..., embed=True)):
+    print(page, pageSize, paras)
     faker = Faker()
-    user_list = []
-    for i in range(10):
-        u = {'id': 112 + i, 'name': "测试姓名" + str(i), 'address': faker.address(),
-             'date': faker.time(pattern="%H:%M:%S", end_datetime=None)}
-        user_list.append(u)
-    data = {"list": user_list, "currentPage": 1, "total": 19, "pageSize": 1}
+    user_list = get_users()
+    # for i in range(50):
+    #     u = {'id': 112 + i, 'name': "测试姓名" + str(i), 'address': faker.address(),
+    #          'date': faker.time(pattern="%H:%M:%S", end_datetime=None)}
+    #     user_list.append(u)
 
+    start = (page - 1) * pageSize
+    end = page * pageSize
+    data = {"list": user_list[start:end], "currentPage": page, "total": len(user_list), "pageSize": pageSize}
     return responseData.ok(data)
 
 
