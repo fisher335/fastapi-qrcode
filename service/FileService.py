@@ -39,7 +39,7 @@ def getMinIOFileList(fileName=None):
     for obj in fileList:
         file = MinioFile()
         file.fileID = obj.etag
-        file.bucket = obj.bucket_name
+        file.bucket = '上传文件'
         file.type = obj.content_type
         file.date = obj.last_modified
         file.name = obj.object_name
