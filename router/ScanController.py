@@ -1,4 +1,5 @@
 import json
+import uuid
 
 import paramiko
 from fastapi import APIRouter
@@ -23,14 +24,12 @@ async def read_item(scan_type: str = Body(default="normal", embed=True, alias="t
 
 @scan_app.post("/creatWays")
 async def read_item(router: list[dict] = Body(default='', embed=True)):
-    # li = [router1, router2, router3]
+    router = [{'ip': '172.16.120.228'}, {'ip': '172.16.120.253'}, {'ip': '172.16.120.246'}]
     li = []
     for i in router:
-        ip = i.get('ip')
-        if ip:
-            li.append(ip)
+        i['id'] = str(uuid.uuid4())
+        li.append(i)
     print(li)
-    li = ['172.16.120.228', '172.16.120.253', '172.16.120.246']
     r = creatWays(li)
 
     data = {"list": r}

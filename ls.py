@@ -1,5 +1,6 @@
 # coding=utf-8
+import uuid
+
 d = {"field":"name"}
 
-field = d['field']  if 'field' in d else '*'
-print(field)
+print(uuid.uuid4())
