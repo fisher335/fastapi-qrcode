@@ -10,7 +10,7 @@
 """
 纯增删改查操作，写在model里面
 """
-from utils.SqliteDB import SqliteDB
+from utils.sqlite_db import SqliteDB
 
 
 class User():

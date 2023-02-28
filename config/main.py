@@ -1,9 +1,9 @@
-from dotmap import DotMap
 
-SERVER_CONFIG = DotMap({
+
+SERVER_CONFIG = {
     "ip": "192.168.0.18",
     "port": 8088
-})
+}
 # 配置用户内容
 USER_LIST = [{'admin': 'admin'}, {'root': 'root'}, {"test": 'test'}]
 

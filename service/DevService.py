@@ -1,4 +1,4 @@
-from utils.SqliteDB import SqliteDB
+from utils.sqlite_db import SqliteDB
 
 
 def get_dev_list(params=None):

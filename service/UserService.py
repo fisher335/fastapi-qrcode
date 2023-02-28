@@ -3,9 +3,9 @@
 from starlette.requests import Request
 
 from common.jwt import check_jwt_token
-from config.Config import WHITE_URL, ALLOW_LIST, USER_LIST
+from config.main import WHITE_URL, ALLOW_LIST, USER_LIST
 from model.users import User
-from utils.SqliteDB import SqliteDB
+from utils.sqlite_db import SqliteDB
 
 
 def user_check(user: str, pwd: str) -> bool:

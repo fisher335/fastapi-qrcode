@@ -2,9 +2,9 @@
 
 from fastapi import APIRouter, Body
 
-from model.ResData import responseData
+from common.response_data import responseData
 from service.DevService import get_dev_list
-from service.FileService import getMinIOFileList, downloadFile
+
 
 dev_app = APIRouter()
 
@@ -19,8 +19,3 @@ async def get_list(page: int = 1, pageSize: int = 10):
     data = {"list": filesPage, "currentPage": page, "total": len(fileList), "pageSize": pageSize}
     return responseData.ok(data)
 
-
-@dev_app.post("/add")
-async def add_item(name: str = Body(..., embed=True)):
-    downloadURL = downloadFile(name)
-    return responseData.ok(downloadURL)

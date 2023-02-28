@@ -6,9 +6,9 @@ from faker import Faker
 from fastapi import APIRouter, Body, Depends
 from fastapi.params import Form
 
+import config.main
 from common.jwt import get_current_user
-from config import Config
-from model.ResData import responseData
+from common.response_data import responseData
 
 from service.UserService import *
 from common.jwt import create_access_token
@@ -24,7 +24,7 @@ async def login(username: str = Form(...),
                 password: str = Form(...)):
     user = checkPWD(username, password)
     if user:
-        access_token_expires = timedelta(minutes=Config.ACCESS_TOKEN_EXPIRE_MINUTES)
+        access_token_expires = timedelta(minutes=config.main.ACCESS_TOKEN_EXPIRE_MINUTES)
         # 登录token 存储了user.id
         token = create_access_token(username, expires_delta=access_token_expires),
         menus = getMenus(user.get('type', '普通用户'))

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<table class="table table-bordered" align="center" sortable = "true" >
+	<caption>视频文件</caption>
+
+   <thead>
+      <tr>
+         <th>No.</th>
+          <th>文件名称</th>
+          <th>播放</th>
+      </tr>
+   </thead>
+   <tbody>
+   {%for value in files%}
+
+          <tr>
+              <td>{{loop.index}}</td>
+              <td>{{value}}</td>
+             <td><a href="/downloadfile/{{value}}" target="_blank">播放</a></td>
+          </tr>
+
+
+   {% endfor %}
+   </tbody>
+</table>
+
+{% endblock %}

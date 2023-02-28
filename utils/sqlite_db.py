@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 import sqlite3
-from common.Common import CommonUtils
+from common.utils import CommonUtils
 
 from dbutils.persistent_db import PersistentDB
 
