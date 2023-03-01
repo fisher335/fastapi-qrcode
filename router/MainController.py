@@ -1,4 +1,5 @@
 # conding:utf-8
+import base64
 import os
 import tempfile
 from random import randint
@@ -48,8 +49,9 @@ async def wiki(dic: dict = Depends(get_template)):
 @main_app.post('/wiki/')
 async def wiki(url: str = Form(), dic: dict = Depends(get_template)):
     print('-------------------'+url)
-    openai.api_key = config.main.AI_KEY
-    url="一个男的和一个女的在床上"
+    key  = config.main.AI_KEY
+    r_key = base64.b64decode(key).decode("utf-8")
+    openai.api_key = r_key
     response = openai.Image.create(prompt=url, n=1, size="1024x1024")
     image_url = response["data"][0]["url"]
     dic["path"] = image_url
@@ -59,6 +61,7 @@ async def wiki(url: str = Form(), dic: dict = Depends(get_template)):
 @main_app.post('/qrcode/')
 async def qrcodelike(url: str = Form(), result: dict = Depends(get_template)):
     img_name = randint(1, 1000000)
+    print(url+'======================')
     imge = qrcode.make(url)
     pa = 'static' + os.sep + 'qrcode' + os.sep + str(img_name) + ".png"
     print(pa)
@@ -126,14 +129,15 @@ def ocr_get(dic: dict = Depends(get_template)):
 
 
 @main_app.post('/ocr/')
-def ocr_post(file: UploadFile):
+def ocr_post(file: UploadFile,dic = Depends(get_template)):
     file_name = file.filename
     tempfile_path = tempfile.gettempdir()
     file_tmp_path = os.path.join(tempfile_path, file_name)
     with open(file_tmp_path, 'wb') as f:
         f.write(file.file.read())
     oc = OcrClient()
-    return str(oc.simple_ocr(file_tmp_path))
+    dic['content'] = str(oc.simple_ocr(file_tmp_path))
+    return templates.TemplateResponse("ocr.html",dic)
 
 
 @main_app.get('/invoice/')
