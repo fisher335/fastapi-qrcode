@@ -1,16 +1,18 @@
 # conding:utf-8
 import os
+import tempfile
 from random import randint
 
 import qrcode
 import requests
 from fastapi import APIRouter, Depends, Form, UploadFile
+from fastapi import Request
 from starlette import status
 from starlette.responses import RedirectResponse, FileResponse
-from starlette.status import HTTP_307_TEMPORARY_REDIRECT
 from starlette.templating import Jinja2Templates
-from fastapi import Request
+
 from common.main import get_template
+from utils.ocr_util import OcrClient
 
 # main的分路由
 templates = Jinja2Templates(directory="router/templates")
@@ -101,32 +103,34 @@ def get_ip():
     my_ip = requests.get('http://jsonip.com').json()['ip']
     return my_ip
 
-#
-# @app.route('/ocr/', methods=['get'])
-# def ocr_get():
-#     return render_template('ocr.html')
-#
-#
-# @app.route('/ocr/', methods=['post'])
-# def ocr_post():
-#     f = request.files['file']
-#     file_name = f.filename
-#     file_tmp_path = os.path.join(DOWNLOAD_PATH, file_name)
-#     f.save(file_tmp_path)
-#     oc = OcrClient()
-#     return str(oc.simple_ocr(file_tmp_path))
-#
-#
-# @app.route('/invoice/', methods=['get'])
-# def invoice_get():
-#     return render_template('invoice.html')
-#
-#
-# @app.route('/invoice/', methods=['post'])
-# def invoice_post():
-#     f = request.files['file']
-#     file_name = f.filename
-#     file_tmp_path = os.path.join(DOWNLOAD_PATH, file_name)
-#     f.save(file_tmp_path)
-#     oc = OcrClient()
-#     return str(oc.fapiao(file_tmp_path))
+
+@main_app.get('/ocr/')
+def ocr_get():
+    return templates.TemplateResponse('ocr.html')
+
+
+@main_app.post('/ocr/')
+def ocr_post(file:UploadFile):
+    file_name = file.filename
+    tempfile_path = tempfile.gettempdir()
+    file_tmp_path = os.path.join(tempfile_path, file_name)
+    with open(file_tmp_path,'wb') as f:
+        f.write(file.file.read())
+    oc = OcrClient()
+    return str(oc.simple_ocr(file_tmp_path))
+
+
+@main_app.get('/invoice/')
+def invoice_get(dic:dict = Depends(get_template)):
+    return templates.TemplateResponse('invoice.html',dic)
+
+
+@main_app.post('/invoice/')
+def invoice_post(file:UploadFile):
+    file_name = file.filename
+    tempfile_path = tempfile.gettempdir()
+    file_tmp_path = os.path.join(tempfile_path, file_name)
+    with open(file_tmp_path,'wb') as f:
+        f.write(file.file.read())
+    oc = OcrClient()
+    return str(oc.fapiao(file_tmp_path))

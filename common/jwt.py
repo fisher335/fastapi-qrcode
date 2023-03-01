@@ -22,8 +22,6 @@ from jose import jwt
 from passlib.context import CryptContext
 from pydantic import ValidationError
 
-from common import exceptions
-from config import main
 from model.users import User
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")

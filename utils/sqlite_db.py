@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import sqlite3
-from common.utils import CommonUtils
 
 from dbutils.persistent_db import PersistentDB
+
+from common.utils import CommonUtils
 
 
 class Pool(object):  # 数据库连接池

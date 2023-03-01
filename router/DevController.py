@@ -1,10 +1,9 @@
 # coding:utf-8
 
-from fastapi import APIRouter, Body
+from fastapi import APIRouter
 
 from common.response_data import responseData
 from service.DevService import get_dev_list
-
 
 dev_app = APIRouter()
 

@@ -7,11 +7,10 @@ from fastapi import APIRouter, Body, Depends
 from fastapi.params import Form
 
 import config.main
+from common.jwt import create_access_token
 from common.jwt import get_current_user
 from common.response_data import responseData
-
 from service.UserService import *
-from common.jwt import create_access_token
 
 # 用户的分路由
 
