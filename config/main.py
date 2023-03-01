@@ -18,3 +18,5 @@ SECRET_KEY: str = 'cetc'
 # 权限相关配置
 WHITE_URL = ['/login', '/user/login']
 ALLOW_LIST = ['admin', 'root']
+# openai的key
+AI_KEY = "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"

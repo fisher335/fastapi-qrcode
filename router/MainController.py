@@ -3,6 +3,7 @@ import os
 import tempfile
 from random import randint
 
+import openai
 import qrcode
 import requests
 from fastapi import APIRouter, Depends, Form, UploadFile
@@ -11,6 +12,7 @@ from starlette import status
 from starlette.responses import RedirectResponse, FileResponse
 from starlette.templating import Jinja2Templates
 
+import config.main
 from common.main import get_template
 from utils.ocr_util import OcrClient
 
@@ -39,8 +41,19 @@ async def list_header(request: Request, result: dict = Depends(get_template)):
 
 
 @main_app.get('/wiki/')
-async def wiki():
-    return RedirectResponse("https://github.com/fisher335/wiki/issues")
+async def wiki(dic: dict = Depends(get_template)):
+    return templates.TemplateResponse("wiki.html", dic)
+
+
+@main_app.post('/wiki/')
+async def wiki(url: str = Form(), dic: dict = Depends(get_template)):
+    print('-------------------'+url)
+    openai.api_key = config.main.AI_KEY
+    url="一个男的和一个女的在床上"
+    response = openai.Image.create(prompt=url, n=1, size="1024x1024")
+    image_url = response["data"][0]["url"]
+    dic["path"] = image_url
+    return templates.TemplateResponse("aipic.html", dic)
 
 
 @main_app.post('/qrcode/')
@@ -87,15 +100,18 @@ def download_file(filename):
     respons = FileResponse(video_path, filename=filename)
     return respons
 
+
 @main_app.get('/downloadfile/{filename}/')
 def download_file(filename):
     video_path = 'static' + os.sep + 'videos' + os.sep + filename
     print(filename)
     respons = FileResponse(video_path, filename=filename)
     return respons
+
+
 @main_app.get('/zhuang/')
-def dazhuang(dic:dict = Depends(get_template)):
-    return templates.TemplateResponse('zhuang.html',dic)
+def dazhuang(dic: dict = Depends(get_template)):
+    return templates.TemplateResponse('zhuang.html', dic)
 
 
 @main_app.route('/ip/')
@@ -105,32 +121,32 @@ def get_ip():
 
 
 @main_app.get('/ocr/')
-def ocr_get():
-    return templates.TemplateResponse('ocr.html')
+def ocr_get(dic: dict = Depends(get_template)):
+    return templates.TemplateResponse('ocr.html', dic)
 
 
 @main_app.post('/ocr/')
-def ocr_post(file:UploadFile):
+def ocr_post(file: UploadFile):
     file_name = file.filename
     tempfile_path = tempfile.gettempdir()
     file_tmp_path = os.path.join(tempfile_path, file_name)
-    with open(file_tmp_path,'wb') as f:
+    with open(file_tmp_path, 'wb') as f:
         f.write(file.file.read())
     oc = OcrClient()
     return str(oc.simple_ocr(file_tmp_path))
 
 
 @main_app.get('/invoice/')
-def invoice_get(dic:dict = Depends(get_template)):
-    return templates.TemplateResponse('invoice.html',dic)
+def invoice_get(dic: dict = Depends(get_template)):
+    return templates.TemplateResponse('invoice.html', dic)
 
 
 @main_app.post('/invoice/')
-def invoice_post(file:UploadFile):
+def invoice_post(file: UploadFile):
     file_name = file.filename
     tempfile_path = tempfile.gettempdir()
     file_tmp_path = os.path.join(tempfile_path, file_name)
-    with open(file_tmp_path,'wb') as f:
+    with open(file_tmp_path, 'wb') as f:
         f.write(file.file.read())
     oc = OcrClient()
     return str(oc.fapiao(file_tmp_path))
