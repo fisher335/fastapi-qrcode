@@ -11,18 +11,18 @@ from router.UserController import user_app
 
 app = FastAPI(title='快速调用接口', description='验证项目', version='1.0.0', docs_url='/docs', redoc_url='/redocs', )
 
-# # 拦截器的例子
-# @app.middleware("http")
-# async def add_process_time_header(request: Request, call_next):
-#     # 拦截访问token
-#     # flag = checkToken(request)
-#     # 对校验进行判断
-#     # if not flag:
-#     #     response = Response("not allowed user")
-#     #     response.status_code = status.HTTP_401_UNAUTHORIZED
-#     #     return response
-#     response = await call_next(request)
-#     return response
+# 拦截器的例子
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    # 拦截访问token
+    # flag = checkToken(request)
+    # 对校验进行判断
+    # if not flag:
+    #     response = Response("not allowed user")
+    #     response.status_code = status.HTTP_401_UNAUTHORIZED
+    #     return response
+    response = await call_next(request)
+    return response
 
 
 origins = [
