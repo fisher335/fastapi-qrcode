@@ -48,7 +48,6 @@ async def wiki(dic: dict = Depends(get_template)):
 
 @main_app.post('/wiki/')
 async def wiki(url: str = Form(), dic: dict = Depends(get_template)):
-    print('-------------------'+url)
     key  = config.main.AI_KEY
     r_key = base64.b64decode(key).decode("utf-8")
     openai.api_key = r_key
@@ -61,7 +60,6 @@ async def wiki(url: str = Form(), dic: dict = Depends(get_template)):
 @main_app.post('/qrcode/')
 async def qrcodelike(url: str = Form(), result: dict = Depends(get_template)):
     img_name = randint(1, 1000000)
-    print(url+'======================')
     imge = qrcode.make(url)
     pa = 'static' + os.sep + 'qrcode' + os.sep + str(img_name) + ".png"
     print(pa)
