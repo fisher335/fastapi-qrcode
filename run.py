@@ -47,5 +47,5 @@ app.mount("/static", StaticFiles(directory="static"), name="static")
 # register_tortoise(app, config=TORTOISE_ORM, generate_schemas=False)
 if __name__ == '__main__':
     # nacos_app.start()
-    uvicorn.run(app='run:app', host="0.0.0.0", port=8088, workers=2,loop="asyncio",reload = True,log_level = "warning")
-    # uvicorn.run(app='run:app', host="127.0.0.1", port=SERVER_CONFIG['port'],  debug=True, log_level="debug")
+    # uvicorn.run(app='run:app', host="0.0.0.0", port=8088, workers=2,loop="asyncio",reload = True,log_level = "warning")
+    uvicorn.run(app='run:app', host="127.0.0.1", port=SERVER_CONFIG['port'],  debug=True, log_level="debug")
