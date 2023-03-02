@@ -20,3 +20,18 @@ WHITE_URL = ['/login', '/user/login']
 ALLOW_LIST = ['admin', 'root']
 # 某ai的key
 AI_KEY = "c2stTFNHa0dVb2hkNVVCZERYaXRXV3hUM0JsYmtGSkZYYjRnZTRxMnAwUllCWTdYamxU"
+
+
+TORTOISE_ORM = {
+    "connections": {"default": 'sqlite://cect.db'},
+    "apps": {
+        "models": {
+            "models": [
+                "database.model.models"
+            ],
+            "default_connection": "default"
+        }
+    }
+}
+
+

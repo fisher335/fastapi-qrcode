@@ -12,5 +12,5 @@ class CommonUtils:
     @classmethod
     def getNow(cls):
         curr_time = datetime.now()
-        s = curr_time.strftime("%Y-%m-%d %H:%M:%S")
+        s = curr_time.strftime("%Y-%m-%d %H：%M：%S")
         return s

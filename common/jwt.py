@@ -22,7 +22,10 @@ from jose import jwt
 from passlib.context import CryptContext
 from pydantic import ValidationError
 
-from model.users import User
+from common import exceptions
+from config import main
+from database.crud import UserCrud
+from database.model.models import Users
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -38,10 +41,10 @@ def create_access_token(subject: Union[str, Any], expires_delta: timedelta = Non
         expire = datetime.utcnow() + expires_delta
     else:
         expire = datetime.utcnow() + timedelta(
-            minutes=Config.ACCESS_TOKEN_EXPIRE_MINUTES
+            minutes=main.ACCESS_TOKEN_EXPIRE_MINUTES
         )
     to_encode = {"exp": expire, "sub": str(subject)}
-    encoded_jwt = jwt.encode(to_encode, Config.SECRET_KEY, algorithm=Config.ALGORITHM)
+    encoded_jwt = jwt.encode(to_encode, main.SECRET_KEY, algorithm=main.ALGORITHM)
     return encoded_jwt
 
 
@@ -78,27 +81,26 @@ def check_jwt_token(
     try:
         payload = jwt.decode(
             token,
-            Config.SECRET_KEY, algorithms=[Config.ALGORITHM]
+            main.SECRET_KEY, algorithms=[main.ALGORITHM]
         )
         return payload
     except jwt.ExpiredSignatureError:
-        raise custom_exc.TokenExpired()
+        raise exceptions.TokenExpired()
     except (jwt.JWTError, ValidationError, AttributeError):
-        raise custom_exc.TokenAuthError()
+        raise exceptions.TokenAuthError()
 
 
-def get_current_user(Authorization=Header()) -> User:
+def get_current_user(Authorization=Header()) -> Users:
     """
     根据header中token 获取当前用户
     :param Authorization: 头部header中的token
     :return:
     """
-
-    playload = check_jwt_token(Authorization)
+    payload = check_jwt_token(Authorization)
     # 从数据库查找用户信息
-    # user = User.single_by_id(uid=playload.get("sub"))
-    user = User()
-    user.name = playload.get("sub")
+    # user = UserCrud.get_user(user_id=payload.get("sub"))
+    user = Users()
+    user.name = payload.get("sub")
     if not user:
-        raise custom_exc.TokenAuthError(err_desc="User not found")
+        raise exceptions.TokenAuthError(err_desc="User not found")
     return user

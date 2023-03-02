@@ -1,11 +1,13 @@
 # coding:utf-8
-
+from passlib.context import CryptContext
 from starlette.requests import Request
 
 from common.jwt import check_jwt_token
 from config.main import WHITE_URL, ALLOW_LIST, USER_LIST
-from model.users import User
-from utils.sqlite_db import SqliteDB
+
+
+from database.crud import UserCrud
+
 
 
 def user_check(user: str, pwd: str) -> bool:
@@ -18,14 +20,14 @@ def user_check(user: str, pwd: str) -> bool:
 
 
 #  检查用户名和密码
-def checkPWD(name: str, pwd: str):
-    with SqliteDB() as db:
-        user = User.single_by_id(name)
-        if len(user) > 0:
-            if user.get('password').strip() == pwd.strip():
-                return user
-        else:
-            return False
+async def checkPWD(name: str, pwd: str):
+    user = await UserCrud.get_user_password(name)
+    pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+    if user:
+        if pwd_context.verify(pwd, user.password.strip()):
+            return user
+    else:
+        return False
 
 
 def checkToken(request: Request):
@@ -103,15 +105,11 @@ def getMenus(usertype: str):
     return home
 
 
-def get_users(params: dict = None):
-    with SqliteDB() as db:
-        if params is not None:
-            name = params.get("name")
-            user_type = params.get("type")
-            where = f" id  like  '%{name}%'   "
-            if user_type:
-                where = where + f" and type = '{user_type}'"
-            result = db.getAll(table='users', where= where)
-        else:
-            result = db.getAll(table='users')
-        return result
+async def get_users(params: dict = None):
+    if params.get("name",False):
+        user_list = await UserCrud.query_users(params["name"])
+        return user_list
+    else:
+        user_list = await UserCrud.get_users()
+        return user_list
+

@@ -30,5 +30,5 @@ class responseData(BaseModel):
 
 
 if __name__ == '__main__':
-    a = resData.ok("123")
+    a = responseData.ok("123")
     print(a)

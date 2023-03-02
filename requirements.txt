@@ -1,7 +1,7 @@
 baidu_aip==4.16.10
 DBUtils==2.0.2
 Faker==15.1.1
-fastapi==0.92.0
+fastapi~=0.78.0
 paramiko==2.11.0
 passlib==1.7.4
 pydantic==1.10.2
@@ -10,6 +10,7 @@ requests==2.28.2
 starlette==0.19.1
 uvicorn==0.17.6
 peewee
-qrcode
+qrcode~=7.4.2
 chardet
-openai
+openai~=0.26.5
+tortoise-orm

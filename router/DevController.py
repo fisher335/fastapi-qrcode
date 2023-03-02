@@ -10,7 +10,7 @@ dev_app = APIRouter()
 
 @dev_app.post("/list")
 async def get_list(page: int = 1, pageSize: int = 10):
-    fileList = sorted(get_dev_list(), key=lambda file: file.get("id"))
+    fileList =  sorted(await get_dev_list(), key=lambda file: file.get("id"))
     print(get_dev_list())
     start = (page - 1) * pageSize
     end = page * pageSize

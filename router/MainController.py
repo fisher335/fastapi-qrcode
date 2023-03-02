@@ -14,7 +14,7 @@ from starlette.responses import RedirectResponse, FileResponse
 from starlette.templating import Jinja2Templates
 
 import config.main
-from common.main import get_template
+from common.render_template import get_template
 from utils.ocr_util import OcrClient
 
 # main的分路由
