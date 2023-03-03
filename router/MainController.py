@@ -30,9 +30,9 @@ async def test(result: dict = Depends(get_template)):
     return templates.TemplateResponse("index.html", result)
 
 
-@main_app.get("/favicon.ico")
-async def read_item():
-    return RedirectResponse('/static/favicon.ico')
+# @main_app.get("/favicon.ico")
+# async def read_item():
+#     return RedirectResponse('/static/favicon.ico')
 
 
 @main_app.get('/list/')
