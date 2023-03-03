@@ -14,3 +14,4 @@ qrcode~=7.4.2
 chardet
 openai~=0.26.5
 tortoise-orm
+python-multipart
